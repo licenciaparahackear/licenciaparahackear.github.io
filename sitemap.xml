@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/archive.html</loc>
-  <lastmod>2019-02-16T05:41:00Z</lastmod>
+  <lastmod>2019-02-16T05:43:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/</loc>
@@ -31,7 +31,7 @@
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/archive.html</loc>
-  <lastmod>2019-02-16T05:41:00Z</lastmod>
+  <lastmod>2019-02-16T05:43:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/</loc>
@@ -47,6 +47,11 @@
   <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/hola-mundo/" />
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/en/posts/nuevo-post/</loc>
+  <lastmod>2019-02-16T05:43:00Z</lastmod>
+  <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/nuevo-post/" />
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/galleries/</loc>
   <lastmod>2019-02-16T04:07:00Z</lastmod>
  </url>
@@ -57,5 +62,9 @@
  <url>
   <loc>https://licenciaparahackear.github.io/posts/hola-mundo/</loc>
   <lastmod>2019-02-16T04:07:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/posts/nuevo-post/</loc>
+  <lastmod>2019-02-16T05:43:00Z</lastmod>
  </url>
 </urlset>
