@@ -1,0 +1,4 @@
+Sitemap: https://licenciaparahackear.github.io/sitemapindex.xml
+
+User-Agent: *
+Host: licenciaparahackear.github.io
