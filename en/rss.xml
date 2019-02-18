@@ -1,2 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>My Nikola Site</title><link>https://licenciaparahackear.github.io/</link><description>This is a demo site for Nikola.</description><atom:link href="https://licenciaparahackear.github.io/en/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2019 &lt;a href="mailto:n.tesla@example.com"&gt;Nikola Tesla&lt;/a&gt; </copyright><lastBuildDate>Sat, 16 Feb 2019 05:43:11 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Nuevo post</title><link>https://licenciaparahackear.github.io/en/posts/nuevo-post/</link><dc:creator>Nikola Tesla</dc:creator><description>&lt;p&gt;Probando!&lt;/p&gt;</description><guid>https://licenciaparahackear.github.io/en/posts/nuevo-post/</guid><pubDate>Sat, 16 Feb 2019 05:42:51 GMT</pubDate></item><item><title>Hola mundo!</title><link>https://licenciaparahackear.github.io/en/posts/hola-mundo/</link><dc:creator>Nikola Tesla</dc:creator><description>&lt;p&gt;jejejeej&lt;/p&gt;</description><guid>https://licenciaparahackear.github.io/en/posts/hola-mundo/</guid><pubDate>Sat, 16 Feb 2019 04:07:08 GMT</pubDate></item></channel></rss>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear</title><link>https://licenciaparahackear.github.io/</link><description>Seguridad informática, computación y software libre</description><atom:link href="https://licenciaparahackear.github.io/en/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2019 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
+</copyright><lastBuildDate>Sun, 17 Feb 2019 23:08:13 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Licencia para Hackear está de vuelta!</title><link>https://licenciaparahackear.github.io/en/posts/licencia-para-hackear-esta-de-vuelta/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;Ya hace casi 4 años que no publico nada en mi blog. Un poco más si contamos
+solamente artículos de mi autoría. Bastantes cosas camiaron desde ese momento,
+en lo personal conseguí un trabajo bastante demandante y arranqué la facultad
+por lo que mi tiempo libre se vio considerablemente reducido.&lt;/p&gt;
+&lt;p&gt;Siempre estuve con ganas de retomar el blog en algún momento, aunque no sabía
+cuando. Hace unos meses me di cuenta de que prácticamente todo el material
+técnico que leía estaba escrito en inglés. Si bien ahora me llevo bastante bien
+con ese idioma, no lo hacía cuando arranqué en el mundo de la seguridad
+informática, y recuerdo lo complicado que era encontrar información de calidad
+escrita en español. La mayoría de blogs en español que seguía también dejaron
+de publicar cosas, o se convirtieron en simples propagandas de los productos de
+Telefónica. Por esto me decidí a retomar el blog de una vez por todas, quizás
+con contenido diferente al anterior pero manteniendo la idea de publicar
+contenido técnico, en español y libre de empresas tratando de vender un
+producto.&lt;/p&gt;
+&lt;p&gt;La idea en esta nueva etapa es tratar de que todo lo que se publique esté
+disponible en español. En caso de que sea alguna publicación importante también
+puede haber una traducción al inglés. Al igual que en la primera etapa, el
+contenido será principalmente sobre seguridad informática y programación. En
+particular, ya tengo artículos pensados sobre vulnerabilidades en librerías de
+NodeJS, soluciones a retos de CTFs y charlas de conferencias.&lt;/p&gt;
+&lt;p&gt;Algo sobre lo que no tengo buenos recuerdos es tener que usar el editor de
+Wordpress para redactar los artículos. Por esto voy a cambiar la plataforma que
+uso por un generador de sitios estáticos. El nuevo material que publique va a
+estar disponible en
+&lt;a href="https://licenciaparahackear.github.io/"&gt;licenciaparahackear.github.io&lt;/a&gt;, no en
+el blog viejo. El material viejo va a seguir disponible solamente en
+&lt;a href="https://licenciaparahackear.wordpress.com/"&gt;licenciaparahackear.wordpress.com&lt;/a&gt;,
+al menos hasta que encuentre la forma de exportar correctamente los posts de un
+Wordpress a un sitio estático.&lt;/p&gt;
+&lt;p&gt;Estén atentos, porque pronto se viene la primera publicación de esta nueva
+etapa, y se viene con todo.&lt;/p&gt;
+&lt;p&gt;Saludos!&lt;/p&gt;&lt;/div&gt;</description><guid>https://licenciaparahackear.github.io/en/posts/licencia-para-hackear-esta-de-vuelta/</guid><pubDate>Sun, 17 Feb 2019 06:48:50 GMT</pubDate></item></channel></rss>
