@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="../../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear (Posts about remote code execution)</title><link>https://licenciaparahackear.github.io/</link><description></description><atom:link href="https://licenciaparahackear.github.io/en/categories/remote-code-execution.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2019 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
 &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
-</copyright><lastBuildDate>Fri, 01 Mar 2019 21:04:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bypassing a restrictive JS sandbox</title><link>https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;While participating in a bug bounty program, I found a site with a very
+</copyright><lastBuildDate>Sat, 02 Mar 2019 04:33:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bypassing a restrictive JS sandbox</title><link>https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;While participating in a bug bounty program, I found a site with a very
 interesting functionality: it allowed me to filter some data based on a
 user-controlled expression. I could put something like &lt;code&gt;book.price &amp;gt; 100&lt;/code&gt; to
 make it only show the books that are more expensive than $100. Using &lt;code&gt;true&lt;/code&gt; as
@@ -21,9 +21,9 @@ are usually hard to get right. In most cases there exist ways to bypass this
 protections to be able to execute code with normal privileges. This is
 specially true if they try to limit the usage of complex, feature bloated
 languages like JavaScript. The problem had already caught my attention, so I
-decided spend my time trying to break this sandbox system. I would learn about
-JavaScript internals, and gain some bucks in case of finding and exploiting the
-RCE.&lt;/p&gt;
+decided to spend my time trying to break this sandbox system. I would learn
+about JavaScript internals, and gain some bucks in case of finding and
+exploiting the RCE.&lt;/p&gt;
 &lt;p&gt;The first thing I did was identify what library the site was using to implement
 the sandbox, given that the NodeJS ecosystem is known for having tens of
 libraries that do the same thing, and in many cases all of them are doing it
@@ -107,7 +107,7 @@ of objects that are a function (this is done with &lt;code&gt;typeof obj == 'fun
 &lt;p&gt;This was a very simple fix, bit it worked surprisingly well. The function
 constructor is available, naturally, only in functions. So I can't get access
 to it. An object's &lt;code&gt;typeof&lt;/code&gt; can't be modified, so anything that is a function
-will have its &lt;code&gt;typeof&lt;/code&gt; set a &lt;code&gt;function&lt;/code&gt;. I didn't find a way to bypass this
+will have its &lt;code&gt;typeof&lt;/code&gt; set to a &lt;code&gt;function&lt;/code&gt;. I didn't find a way to bypass this
 protection, so I looked at the second vuln.&lt;/p&gt;
 &lt;h3&gt;Analysis of the second vuln&lt;/h3&gt;
 &lt;p&gt;This vuln was way more simple and easy to detect than the first one: the
