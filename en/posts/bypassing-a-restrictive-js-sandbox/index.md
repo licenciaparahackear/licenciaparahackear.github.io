@@ -180,7 +180,7 @@ won't perform any malicious actions, like accessing the function constructor.
 
 This fix turned out to be more complex than the first one. Also, Matt Austin
 (the author of the fix) said he wasn't sure it would work perfectly. So I
-decided to find a bypass this fix.
+decided to find a bypass to this fix.
 
 ## Finding a new vulnerability
 
