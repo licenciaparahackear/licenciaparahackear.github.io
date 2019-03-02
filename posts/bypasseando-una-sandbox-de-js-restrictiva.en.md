@@ -299,7 +299,7 @@ we will have a very satisfactory result:
 
 ![Result of parsing the function using parameter destructuring][object-pattern]
 
-[object-pattern]: /images/static-eval/esprima-online-parser.png
+[object-pattern]: /images/static-eval/esprima-online-parser-en.png
 [esprima-online-parser]: http://esprima.org/demo/parse.html
 
 Indeed, this new syntax makes the function argument have a `key.type` different from
