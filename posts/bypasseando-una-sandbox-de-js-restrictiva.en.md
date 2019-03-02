@@ -32,9 +32,9 @@ are usually hard to get right. In most cases there exist ways to bypass this
 protections to be able to execute code with normal privileges. This is
 specially true if they try to limit the usage of complex, feature bloated
 languages like JavaScript. The problem had already caught my attention, so I
-decided spend my time trying to break this sandbox system. I would learn about
-JavaScript internals, and gain some bucks in case of finding and exploiting the
-RCE.
+decided to spend my time trying to break this sandbox system. I would learn
+about JavaScript internals, and gain some bucks in case of finding and
+exploiting the RCE.
 
 The first thing I did was identify what library the site was using to implement
 the sandbox, given that the NodeJS ecosystem is known for having tens of
@@ -144,7 +144,7 @@ else if (node.type === 'MemberExpression') {
 This was a very simple fix, bit it worked surprisingly well. The function
 constructor is available, naturally, only in functions. So I can't get access
 to it. An object's `typeof` can't be modified, so anything that is a function
-will have its `typeof` set a `function`. I didn't find a way to bypass this
+will have its `typeof` set to a `function`. I didn't find a way to bypass this
 protection, so I looked at the second vuln.
 
 [template-injection]: https://portswigger.net/blog/xss-without-html-client-side-template-injection-with-angularjs
