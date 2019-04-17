@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://licenciaparahackear.github.io/</loc>
-  <lastmod>2019-03-01T19:07:00Z</lastmod>
+  <lastmod>2019-04-17T03:20:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/2019/</loc>
@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/archive.html</loc>
-  <lastmod>2019-03-01T18:50:00Z</lastmod>
+  <lastmod>2019-04-17T03:20:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/</loc>
@@ -59,7 +59,7 @@
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/archive.html</loc>
-  <lastmod>2019-03-01T18:50:00Z</lastmod>
+  <lastmod>2019-04-17T03:20:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/</loc>
@@ -106,6 +106,10 @@
   <loc>https://licenciaparahackear.github.io/en/posts/licencia-para-hackear-esta-de-vuelta/</loc>
   <lastmod>2019-02-17T23:07:00Z</lastmod>
   <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/licencia-para-hackear-esta-de-vuelta/" />
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/exorcismo.html</loc>
+  <lastmod>2019-04-17T03:18:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/galleries/</loc>
