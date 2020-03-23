@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://licenciaparahackear.github.io/</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/2019/</loc>
@@ -15,11 +15,11 @@
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/archive.html</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/</loc>
-  <lastmod>2019-03-01T21:04:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/bug-bounty/</loc>
@@ -30,12 +30,24 @@
   <lastmod>2019-03-01T21:04:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/categories/conferencia/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/categories/docker/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/categories/javascript/</loc>
   <lastmod>2019-03-01T21:04:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/jsonpath/</loc>
   <lastmod>2019-03-01T21:04:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/categories/nix/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/nodejs/</loc>
@@ -50,6 +62,10 @@
   <lastmod>2019-03-01T21:04:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/categories/sysadmin/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/en/</loc>
   <lastmod>2019-02-17T23:04:00Z</lastmod>
  </url>
@@ -59,11 +75,11 @@
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/archive.html</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/</loc>
-  <lastmod>2019-03-01T21:04:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/bug-bounty/</loc>
@@ -74,12 +90,24 @@
   <lastmod>2019-03-01T21:04:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/en/categories/conferencia/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/en/categories/docker/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/en/categories/javascript/</loc>
   <lastmod>2019-03-01T21:04:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/jsonpath/</loc>
   <lastmod>2019-03-01T21:04:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/en/categories/nix/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/nodejs/</loc>
@@ -94,6 +122,10 @@
   <lastmod>2019-03-01T21:04:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/en/categories/sysadmin/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/en/galleries/</loc>
   <lastmod>2019-02-17T23:04:00Z</lastmod>
  </url>
@@ -103,6 +135,11 @@
   <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/bypasseando-una-sandbox-de-js-restrictiva/" />
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/en/posts/invitacion-a-nerdearla/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+  <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/invitacion-a-nerdearla/" />
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/en/posts/licencia-para-hackear-esta-de-vuelta/</loc>
   <lastmod>2019-02-17T23:07:00Z</lastmod>
   <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/licencia-para-hackear-esta-de-vuelta/" />
@@ -110,6 +147,14 @@
  <url>
   <loc>https://licenciaparahackear.github.io/exorcismo.html</loc>
   <lastmod>2019-04-17T03:18:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/faradayctf/reto-crypto-js/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/faradayctf/reto-crypto-js/404.html</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/galleries/</loc>
@@ -123,6 +168,10 @@
   <loc>https://licenciaparahackear.github.io/posts/bypasseando-una-sandbox-de-js-restrictiva/</loc>
   <lastmod>2019-03-01T18:27:00Z</lastmod>
   <xhtml:link rel="alternate" hreflang="en" href="https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/" />
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/posts/invitacion-a-nerdearla/</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/posts/licencia-para-hackear-esta-de-vuelta/</loc>

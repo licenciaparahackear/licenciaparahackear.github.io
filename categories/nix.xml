@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear (Publicaciones sobre nix)</title><link>https://licenciaparahackear.github.io/</link><description></description><atom:link href="https://licenciaparahackear.github.io/categories/nix.xml" rel="self" type="application/rss+xml"></atom:link><language>es</language><copyright>Contents © 2020 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
+</copyright><lastBuildDate>Mon, 23 Mar 2020 02:33:33 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Invitación a nerdear.la</title><link>https://licenciaparahackear.github.io/posts/invitacion-a-nerdearla/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;El 17, 18 y 19 de octubre de este año se llevará a cabo &lt;a href="https://nerdear.la"&gt;Nerdear.la&lt;/a&gt;: una
+conferencia sobre devops, desarrollo y temática nerd en general. Se trata de la
+sexta edición del evento, y es la primera vez que se hace en Ciudad Cultural
+Konex. La entrada es 100% gratis, al igual que en años anteriores.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Nerdearla 2018" src="https://licenciaparahackear.github.io/images/nerdearla2018.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Este año, la conferencia contará con un &lt;a href="https://nerdear.la/agenda/"&gt;excelente nivel de charlas&lt;/a&gt;
+que nada tiene que envidiarle a otros eventos, locales o internacionales. El
+jueves a las 16:35 yo voy a estar dando una charla sobre entornos reproducibles
+y cómo utilizar &lt;a href="https://nixos.org/nix/"&gt;Nix&lt;/a&gt; como alternativa a Dockerfiles. Acto seguido,
+&lt;a href="https://twitter.com/jpdborgna"&gt;GiBA&lt;/a&gt; va a hablar sobre una herramienta de logging bastante prometedora
+que hicieron en Facebook.&lt;/p&gt;
+&lt;p&gt;Otras charlas que me interesaron:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Making Illegal States Unrepresentable (in JavaScript): por el título, supongo
+  que va a hablar un poco de &lt;a href="https://elm-lang.org/"&gt;Elm&lt;/a&gt;, uno de mis lenguajes de programación
+  preferidos, y mostrar como se pueden adaptar ciertas cosas del lenguaje a
+  Javascript.&lt;/li&gt;
+&lt;li&gt;Diagnosing bad TDD habits with Dr.TDD: una charla sobre TDD y &lt;a href="https://es.wikipedia.org/wiki/Smalltalk"&gt;Smalltalk&lt;/a&gt;,
+  que encima tiene &lt;a href="https://vimeo.com/354461588"&gt;un video en su descripción&lt;/a&gt;! Definitivamente no me la pienso
+  perder.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://es.wikipedia.org/wiki/Donald_Knuth"&gt;Donald Knuth&lt;/a&gt;, TeX y la curva del dragón: hablará de TeX, el
+  predecesor de LaTeX. Si bien no es un sistema que me guste mucho, tiene una
+  historia muy interesante, en especial por tratarse de uno de los proyectos más
+  importantes de &lt;a href="https://es.wikipedia.org/wiki/Donald_Knuth"&gt;Donald Knuth&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Standup Matemático: por si creían que para llamarse "nerdear.la" le faltaban cosas nerd.&lt;/li&gt;
+&lt;li&gt;1969 - 2019: 50 years of UNIX and the landing on the Moon: charla de cierre dada por el
+  conocido &lt;a href="https://twitter.com/maddoghall"&gt;Jon «maddog» Hall&lt;/a&gt;. No pude asistir a la charla que dio la última vez
+  que estuvo en Argentina, así que esta es mi oportunidad de hacerlo!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;También estarán dando un taller de introducción a Bash dictado por las chicas
+de &lt;a href="https://twitter.com/linuxchixar"&gt;LinuxChix Argentina&lt;/a&gt; que vengo recomendando hace unos días a
+gente con poca experiencia con el uso de la terminal en GNU/Linux. Es de cupo
+limitado así que &lt;a href="https://docs.google.com/forms/d/e/1FAIpQLSdIz_3gsHsSL4U58BysEQy5TH2zRWgYNFV0okZplDaJa-u45A/viewform"&gt;hay que inscribirse primero&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Y para quienes tengan que trabajar durante los días de la conferencia, también
+contará con un espacio de coworking que, al menos hasta el año pasado, siempre
+contó con una buena conexión a internet.&lt;/p&gt;
+&lt;p&gt;Para más información sobre el evento, puden visitar su sitio
+&lt;a href="https://nerdear.la/"&gt;https://nerdear.la/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Saludos!&lt;/p&gt;
+&lt;h4&gt;Apéndice&lt;/h4&gt;
+&lt;p&gt;No encontré en la página la descripción completa de mi charla, así que la dejo
+por acá para quien esté interesado/a:&lt;/p&gt;
+&lt;p&gt;“It works on my machine!” Seguramente todo desarrollaror/a haya usado esta
+frase en algún momento de su carrera para justificar la presencia de un bug.
+Decir esto implica, más allá del bug en cuestión, que hay una diferencia no muy
+evidente (pero sí perjudicial) entre los entornos de desarrollo y el
+productivo.&lt;/p&gt;
+&lt;p&gt;En los últimos años se trató de minimizar estas diferencias por medio de
+entornos reproducibles. Las herramientas de cloud computing, infrastructure as
+code y principalmente el uso de containers facilitaron esto. Sin embargo, estas
+herramientas no siempre garantizan que lo que hagamos sea reproducible. Además,
+en varios casos su complejidad de uso hace que se usen solamente en entornos de
+staging y no en las máquinas de los desarrolladores, lo que nos vuelve a llevar
+al “it works on my machine”.&lt;/p&gt;
+&lt;p&gt;Voy a hablar de Nix, un lenguaje de programación, package manager y build tool
+que tiene a la reproducibilidad como idea principal. Nix permite construir un
+entorno reproducible sin tener el overhead que traen el uso de containers o VMs
+(aunque también se lleva muy bien con estos). De esta forma, resulta muy
+conveniente tanto al momento de desarrollar como al servir el software en
+producción.&lt;/p&gt;&lt;/div&gt;</description><category>conferencia</category><category>docker</category><category>nix</category><category>sysadmin</category><guid>https://licenciaparahackear.github.io/posts/invitacion-a-nerdearla/</guid><pubDate>Thu, 10 Oct 2019 01:37:28 GMT</pubDate></item></channel></rss>

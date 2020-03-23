@@ -14,12 +14,24 @@
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/conferencia.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/docker.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/categories/javascript.xml</loc>
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/categories/jsonpath.xml</loc>
   <lastmod>2019-04-17T03:20:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/nix.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/categories/nodejs.xml</loc>
@@ -34,6 +46,10 @@
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/sysadmin.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/bug-bounty.xml</loc>
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
@@ -42,12 +58,24 @@
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/en/categories/conferencia.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://licenciaparahackear.github.io/en/categories/docker.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/javascript.xml</loc>
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/jsonpath.xml</loc>
   <lastmod>2019-04-17T03:20:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://licenciaparahackear.github.io/en/categories/nix.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/nodejs.xml</loc>
@@ -62,12 +90,16 @@
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/en/categories/sysadmin.xml</loc>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/en/galleries/rss.xml</loc>
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/rss.xml</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/galleries/rss.xml</loc>
@@ -75,10 +107,10 @@
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/rss.xml</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/sitemap.xml</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
 </sitemapindex>
