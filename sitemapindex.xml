@@ -18,6 +18,10 @@
   <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/ctf.xml</loc>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/categories/docker.xml</loc>
   <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
@@ -46,8 +50,16 @@
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/steganography.xml</loc>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/categories/sysadmin.xml</loc>
   <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://licenciaparahackear.github.io/categories/writeup.xml</loc>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/bug-bounty.xml</loc>
@@ -60,6 +72,10 @@
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/conferencia.xml</loc>
   <lastmod>2020-03-23T02:33:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://licenciaparahackear.github.io/en/categories/ctf.xml</loc>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/docker.xml</loc>
@@ -90,27 +106,27 @@
   <lastmod>2019-04-17T03:20:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://licenciaparahackear.github.io/en/categories/steganography.xml</loc>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://licenciaparahackear.github.io/en/categories/sysadmin.xml</loc>
   <lastmod>2020-03-23T02:33:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>https://licenciaparahackear.github.io/en/galleries/rss.xml</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <loc>https://licenciaparahackear.github.io/en/categories/writeup.xml</loc>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/en/rss.xml</loc>
-  <lastmod>2020-03-23T02:33:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>https://licenciaparahackear.github.io/galleries/rss.xml</loc>
-  <lastmod>2019-04-17T03:20:00Z</lastmod>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/rss.xml</loc>
-  <lastmod>2020-03-23T02:33:00Z</lastmod>
+  <lastmod>2020-09-29T00:06:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://licenciaparahackear.github.io/sitemap.xml</loc>
-  <lastmod>2020-03-23T02:33:00Z</lastmod>
+  <lastmod>2020-09-29T00:13:00Z</lastmod>
  </sitemap>
 </sitemapindex>

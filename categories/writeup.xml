@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear (Publicaciones sobre writeup)</title><link>https://licenciaparahackear.github.io/</link><description></description><atom:link href="https://licenciaparahackear.github.io/categories/writeup.xml" rel="self" type="application/rss+xml"></atom:link><language>es</language><copyright>Contents © 2020 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
+</copyright><lastBuildDate>Tue, 29 Sep 2020 00:18:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Ekoparty CTF: Stegano Writeup</title><link>https://licenciaparahackear.github.io/posts/ekoparty-ctf-stegano-writeup/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;Hace unos días fue la Ekoparty Online 2020. Esta vez la conferencia fue online,
+así que opté por participar activamente en el CTF en vez de asistir a las
+charlas. Muchos retos me resultaron bastante desafiantes, entre ellos
+&lt;strong&gt;Stegano&lt;/strong&gt;, uno de los últimos que pudimos resolver junto a &lt;a href="https://twitter.com/EzequielTBH/"&gt;EzequielTBH&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para este reto se nos entregaba una &lt;a href="https://licenciaparahackear.github.io/stegano.bmp"&gt;imagen en formato BMP&lt;/a&gt;, así
+que nos imaginamos que la flag iba a estar escondida ahí. Subiendo la imagen al
+buscador Google Images y agregando la palabra clave &lt;strong&gt;steganography&lt;/strong&gt;, nos
+encontramos con un &lt;a href="https://securitynews.sonicwall.com/xmlpost/loki-bot-started-using-image-steganography-and-multi-layered-protection/"&gt;blogpost hablando de la esteganografía usada por
+Loki-Bot&lt;/a&gt;. Sabiendo que la temática del CTF era el malware, nos
+imaginamos que el problema venía por ahí.&lt;/p&gt;
+&lt;p&gt;Leyendo el blogpost vimos que en una parte se describía, mostrando código C, el
+proceso por el cual se descifra un mensaje aplicándole un XOR con la clave
+&lt;code&gt;@y_%_M_ew@&lt;/code&gt; y con la variable de un byte &lt;code&gt;dwKeysize&lt;/code&gt;, que representa
+la longitud de esta clave (en este caso, 10 o 0xA):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Descifrado de mensajes usando XOR" src="https://licenciaparahackear.github.io/images/stegano/DecryptionLogic.png"&gt;&lt;/p&gt;
+&lt;p&gt;También se mencionaba un proceso por el cual se obtiene el mensaje escondido
+dentro del fichero BMP:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Proceso de obtención del mensaje oculto en el BMP" src="https://licenciaparahackear.github.io/images/stegano/Steganography.jpg"&gt;&lt;/p&gt;
+&lt;!-- También se mencionaba un proceso de descifrado de mensajes, que consistíá en un --&gt;
+
+&lt;!-- simple XOR del mensaje con la clave `@y_%_M_ew@` y con un byte representando la --&gt;
+
+&lt;!-- longitud de la clave (10 bytes, o 0xA): --&gt;
+
+&lt;p&gt;Si bien el proceso de descifrado usando XOR se entendió bastante bien, este
+código para obtener el mensaje en el BMP era algo confuso y tenía bastantes
+constantes que no entendimos de dónde se sacaron. Hacer un programa que obtenga
+el mensaje de forma perfecta nos hubiese llevado bastante tiempo, y faltaba
+poco para que el CTF termine. Sin embargo, la perfección no es necesaria para
+resolver un reto. Lo único que necesitábamos era obtener la flag, que tiene el
+formato &lt;code&gt;EKO{...}&lt;/code&gt;. No nos importa que la información descifrada conserve su
+integridad, sino que nos podemos permitir que tenga algunos bytes que son
+basura, siempre y cuando nos muestre la flag. Teniendo en cuenta esto, usamos
+una versión simplificada del algoritmo de descifrado. No es para nada perfecta,
+pero cumplió su propósito.&lt;/p&gt;
+&lt;p&gt;Si volvemos al código en C que lee el fichero BMP podemos notar algunas cosas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Se calcula desde qué byte empezar a descifrar teniendo en cuenta el header
+  del fichero BMP, el ancho y alto de la imagen&lt;/li&gt;
+&lt;li&gt;Mucha de la lógica en el código consiste en detectar cuándo se llegó al final
+  de una fila para así pasar a la fila siguiente, arrancando desde la primer
+  columna. Los bloques &lt;em&gt;if&lt;/em&gt; dentro del código se encargan de hacer esto.&lt;/li&gt;
+&lt;li&gt;En cada iteración del &lt;em&gt;for&lt;/em&gt;, se leen dos bytes del fichero (esto se puede ver
+  en el código resaltado). El &lt;code&gt;&amp;amp; 0x0F&lt;/code&gt; se
+  queda solamente con los últimos 4 bits de cada byte, ignorando los bits más
+  significativos.&lt;/li&gt;
+&lt;li&gt;Se juntan los 4 últimos bits del segundo byte leído con los 4 últimos del primero,
+  para así escribir un byte por cada dos leídos&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Teniendo en cuenta que el tamaño de la flag es de unos pocos bytes y que el
+ancho del BMP es de 801 píxeles, es poco probable que la flag esté distribuida
+en dos filas distintas, así que todo el código relacionado a los límites de la
+imagen se puede ignorar. Además, como no nos importa descifrar información
+corrupta, siempre y cuando se encuentre la flag, tampoco es necesario calcular
+desde dónde empezar a descifrar: para simplificar el código, podemos descifrar
+todo desde el inicio hasta el final de la imagen.&lt;/p&gt;
+&lt;p&gt;Sabiendo esto, es posible tener una solución más simple al código en C
+descripto en el blogpost. Solamente habría que ir leyendo el fichero BMP de a
+dos bytes, juntarlos en un único byte usando operaciones a nivel de bits, y
+aplicarle un XOR con la clave &lt;code&gt;@y_%_M_ew@&lt;/code&gt;. Esto sería bastante sencillo,
+aunque es necesario tener en cuenta algunas cosas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Como se lee de a dos bytes, no es lo mismo arrancar en un byte par que en
+  uno impar. Una de las dos formas va a producir información incorrecta.&lt;/li&gt;
+&lt;li&gt;El cifrado XOR depende de la posición en la que se arranca. Si arrancamos
+  a descifrar desde una posición incorrecta, la clave puede quedar "desfasada"
+  y descifrar cualquier cosa&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Como solución a estos problemas, usamos un método sucio pero eficiente:
+probemos todas las combinaciones hasta dar con el resultado. Podemos leer
+primero desde un byte par, después desde uno impar. O podemos probar con todas
+las posibles rotaciones de la clave (como es de 10 bytes, hay 10 posibles
+rotaciones).&lt;/p&gt;
+&lt;p&gt;Finalmente, armamos el siguiente script de Python que lee la imagen y prueba
+descifrarla usando las combinaciones descriptas anteriormente:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'stegano.bmp'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'rb'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;bmp_contents&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;out&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'stegano-output'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'wb'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;try_decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;contents&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;encoded&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contents&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;first_byte&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;second_byte&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;contents&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;contents&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;encoded&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(((&lt;/span&gt;&lt;span class="n"&gt;second_byte&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0x0f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;first_byte&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0x0f&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;decoded&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt; &lt;span class="mh"&gt;0xA&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;encoded&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+    &lt;span class="n"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;bytes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;decoded&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+
+&lt;span class="n"&gt;ORIGINAL_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;'@y_%_M_ew@'&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;possible_keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;# rotate the original key&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ORIGINAL_KEY&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+        &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;ORIGINAL_KEY&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;:]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ORIGINAL_KEY&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;possible_keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;try_decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bmp_contents&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;try_decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bmp_contents&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:])&lt;/span&gt;  &lt;span class="c1"&gt;# arrancar desde un byte impar&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;Una vez que lo ejecutamos y abrimos el fichero &lt;code&gt;stegano-output&lt;/code&gt; con un editor
+hexadecimal, encontramos la flag que resultó siendo
+&lt;code&gt;EKO{n0m0r3m4lw4r3_and_m04r_st3g4n00000000}&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Flag en el fichero stegano-output" src="https://licenciaparahackear.github.io/images/stegano/flag.png"&gt;&lt;/p&gt;
+&lt;p&gt;Así pudimos resolver este reto de esteganografía. Si bien este tipo de retos no
+suelen ser mis preferidos, en este caso lo disfruté bastante. No es el clásico
+ejemplo de una imagen pasada por el &lt;a href="http://steghide.sourceforge.net/"&gt;steghide&lt;/a&gt; o herramientas
+similares, sino que requería entender el código que usaba un malware para
+ocultar la información.&lt;/p&gt;
+&lt;p&gt;Para concluir el post, quiero destacar la importancia de reconocer que el
+objetivo de un reto es obtener la flag. Teniendo en cuenta esto, es posible
+obviar ciertos detalles que no aportan mucho y son bastante tediosos, como fue
+en este caso la lógica de decidir qué bytes usar para descifrar. Si no hubiese
+tenido esto en cuenta, quizás no hubiese podido resolver el reto a tiempo.&lt;/p&gt;
+&lt;p&gt;Espero con este post haber descripto no solo la solución al reto, sino también
+el proceso que seguimos para solucionarlo. Pronto publicaré las soluciones a
+algún otro reto que me haya gustado.&lt;/p&gt;
+&lt;p&gt;Saludos!&lt;/p&gt;&lt;/div&gt;</description><category>ctf</category><category>steganography</category><category>writeup</category><guid>https://licenciaparahackear.github.io/posts/ekoparty-ctf-stegano-writeup/</guid><pubDate>Mon, 28 Sep 2020 22:33:11 GMT</pubDate></item></channel></rss>
