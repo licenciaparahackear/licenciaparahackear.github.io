@@ -1204,7 +1204,10 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.fenced_code', 'markdown.extensions.c
 # Google Analytics or whatever else you use. Added to the bottom of <body>
 # in the default template (base.tmpl).
 # (translatable)
-# BODY_END = ""
+BODY_END = """
+<script data-goatcounter="https://lph.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+"""
 
 # The possibility to extract metadata from the filename by using a
 # regular expression.
