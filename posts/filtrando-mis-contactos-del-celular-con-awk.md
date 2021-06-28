@@ -7,6 +7,7 @@
 .. link: 
 .. description: 
 .. type: text
+.. previewimage: /images/og-awk.png
 -->
 
 Hace unas semanas cambié mi celular con Android. Una de las cosas que tuve que
@@ -65,7 +66,7 @@ es texto plano delimitado por líneas.
 
 Teniendo en cuenta de que quería parsear un fichero en un formato simple y
 hacerlo una única vez, me decidí por usar [AWK][awk] en vez del tradicional
-Python. En lenguaje AWK es bastante chico y por esto se puede aprender en pocas
+Python. El lenguaje AWK es bastante chico y por esto se puede aprender en pocas
 horas. Con leer [su página en Wikipedia][awk] ya se puede entender bastante su
 funcionamiento.
 
@@ -114,7 +115,7 @@ lenuaje especializado en manejo de ficheros de texto y programas de un solo uso.
 Quizás el código no sea tan mantenible, pero no me importa si se que no lo voy a
 volver a correr. Necesitaba una solución rapida, y AWK cumplió a la perfección.
 
-Espero con este post haber explicado la escencia del lenguaje AWK. Me parece que
+Espero con este post haber explicado la esencia del lenguaje AWK. Me parece que
 es una herramienta fundamental para cualquier persona que se dedique a programar
 o administrar sistemas UNIX-style. El lenguaje se puede aprender en pocas horas,
 y es capaz de mejorar muchísimo nuestra productividad.

@@ -7,6 +7,7 @@
 .. link: 
 .. description: 
 .. type: text
+.. previewimage: /images/og-awk.png
 -->
 
 A few weeks ago I changed my Android cellphone for a newer one. I needed to
@@ -16,18 +17,18 @@ manually, using [vCard .vcf files][vcf].
 
 [vcf]: https://en.wikipedia.org/wiki/VCard
 
-Some years ago, when I still used Google services in my phone, the Gmail app
+Some years ago, when I still used Google services on my phone, the Gmail app
 decided to create a phone contact for each user I have emailed to. This created
-a lot of useless contacts. Contacts for whom I don't even knew they phone
-number, only their e-mail. Unsurprisingly, this turned out to be an annoying
-behavior. I couldn't easily get rid of these new contacts, so I kept them even
-though I knew I wouldn't use them.
+a lot of useless contacts. Contacts for whom I don't even know their phone
+number, only their e-mail. Unsurprisingly, this turned out to be quite annoying.
+I couldn't easily get rid of these new contacts, so I kept them even though I
+knew I wouldn't use them.
 
 Since I was already changing my phone, it was a good occasion to finally delete
 all of these useless contacts. To do this, I would need to:
 
 * Export my old phone contacts into a [.vcf file][vcf]
-* Find or create a tool allowing me to programatically delete the contacts
+* Find or create a tool allowing me to programmatically delete the contacts
   without a phone number
 * Save the output into a new .vcf file, ready for import into my new phone
 
@@ -98,7 +99,7 @@ AWK program:
 }
 ```
 
-I ran the program running `awk -f program.awk <unfiltered-contacts.vcf >filtered-contacts.vcf`.
+I ran the program with `awk -f program.awk <unfiltered-contacts.vcf >filtered-contacts.vcf`.
 This created a new .vcf file that only contained the contacts with a phone
 number. It was ready to be imported into my new cellphone.
 
@@ -107,14 +108,14 @@ program that solved my problem perfectly. I didn't overthink it by installing
 external libraries, creating big class hierarchies, nor making complex file
 parsers.
 
-It looks like I was way more productive using a 40 year old language than using
-Python, my goto language for most problems. Because AWK is intended to be used
+It looks like I was way more productive using a 40-year old language than using
+Python, my go-to language for most problems. Because AWK is intended to be used
 for handling text files and writing throwaway programs, it was the perfect fit
 for my problem. Maybe the code wasn't very maintainable, but I don't have
-to care about it if I planned to to discard the program after it ran
+to care about it if I planned to discard the program after it ran
 successfully. I needed a quick solution, and AWK succeeded at it.
 
-I hope that with this short blogpost I explained the escence of the AWK
+I hope that with this short blogpost I explained the essence of the AWK
 language. It is a fundamental tool for programmers and sysadmins. You can learn
 the language in a few hours, and it will definitely be a productivity boost.
 
