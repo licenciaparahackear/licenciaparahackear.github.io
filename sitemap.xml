@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://licenciaparahackear.github.io/</loc>
-  <lastmod>2020-09-27T22:34:00Z</lastmod>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/2019/</loc>
@@ -18,12 +18,24 @@
   <lastmod>2020-08-16T02:30:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/2021/</loc>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/archive.html</loc>
-  <lastmod>2020-09-29T00:13:00Z</lastmod>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/</loc>
-  <lastmod>2020-09-28T05:09:00Z</lastmod>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/categories/android/</loc>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/categories/awk/</loc>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/categories/bug-bounty/</loc>
@@ -78,12 +90,16 @@
   <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/categories/unix/</loc>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/categories/writeup/</loc>
   <lastmod>2020-09-28T05:09:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/</loc>
-  <lastmod>2020-08-16T02:30:00Z</lastmod>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/2019/</loc>
@@ -94,12 +110,24 @@
   <lastmod>2020-08-16T02:30:00Z</lastmod>
  </url>
  <url>
+  <loc>https://licenciaparahackear.github.io/en/2021/</loc>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://licenciaparahackear.github.io/en/archive.html</loc>
-  <lastmod>2020-09-29T00:13:00Z</lastmod>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/</loc>
-  <lastmod>2020-09-28T05:09:00Z</lastmod>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/en/categories/android/</loc>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/en/categories/awk/</loc>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/categories/bug-bounty/</loc>
@@ -154,12 +182,12 @@
   <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
-  <loc>https://licenciaparahackear.github.io/en/categories/writeup/</loc>
-  <lastmod>2020-09-28T05:09:00Z</lastmod>
+  <loc>https://licenciaparahackear.github.io/en/categories/unix/</loc>
+  <lastmod>2021-06-27T00:48:00Z</lastmod>
  </url>
  <url>
-  <loc>https://licenciaparahackear.github.io/en/posts/aprovechando-nginx-para-clonar-repos-privados-de-srht/</loc>
-  <lastmod>2020-08-16T02:30:00Z</lastmod>
+  <loc>https://licenciaparahackear.github.io/en/categories/writeup/</loc>
+  <lastmod>2020-09-28T05:09:00Z</lastmod>
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/</loc>
@@ -170,6 +198,11 @@
   <loc>https://licenciaparahackear.github.io/en/posts/ekoparty-ctf-stegano-writeup/</loc>
   <lastmod>2020-09-27T22:34:00Z</lastmod>
   <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/ekoparty-ctf-stegano-writeup/" />
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/en/posts/filtrando-mis-contactos-del-celular-con-awk/</loc>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
+  <xhtml:link rel="alternate" hreflang="es" href="https://licenciaparahackear.github.io/posts/filtrando-mis-contactos-del-celular-con-awk/" />
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/en/posts/invitacion-a-nerdearla/</loc>
@@ -194,10 +227,6 @@
   <lastmod>2020-03-23T02:33:00Z</lastmod>
  </url>
  <url>
-  <loc>https://licenciaparahackear.github.io/posts/aprovechando-nginx-para-clonar-repos-privados-de-srht/</loc>
-  <lastmod>2020-08-16T02:30:00Z</lastmod>
- </url>
- <url>
   <loc>https://licenciaparahackear.github.io/posts/bypasseando-una-sandbox-de-js-restrictiva/</loc>
   <lastmod>2019-03-01T18:27:00Z</lastmod>
   <xhtml:link rel="alternate" hreflang="en" href="https://licenciaparahackear.github.io/en/posts/bypassing-a-restrictive-js-sandbox/" />
@@ -205,6 +234,11 @@
  <url>
   <loc>https://licenciaparahackear.github.io/posts/ekoparty-ctf-stegano-writeup/</loc>
   <lastmod>2020-09-27T22:34:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://licenciaparahackear.github.io/posts/filtrando-mis-contactos-del-celular-con-awk/</loc>
+  <lastmod>2021-06-26T22:40:00Z</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://licenciaparahackear.github.io/en/posts/filtrando-mis-contactos-del-celular-con-awk/" />
  </url>
  <url>
   <loc>https://licenciaparahackear.github.io/posts/invitacion-a-nerdearla/</loc>

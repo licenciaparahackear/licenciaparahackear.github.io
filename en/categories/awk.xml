@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear (Posts about awk)</title><link>https://licenciaparahackear.github.io/</link><description></description><atom:link href="https://licenciaparahackear.github.io/en/categories/awk.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
+</copyright><lastBuildDate>Mon, 28 Jun 2021 20:16:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Filtering my phone contacts with AWK</title><link>https://licenciaparahackear.github.io/en/posts/filtrando-mis-contactos-del-celular-con-awk/</link><dc:creator>Matías Lang</dc:creator><description>&lt;figure&gt;&lt;img src="https://licenciaparahackear.github.io/images/og-awk.png"&gt;&lt;/figure&gt; &lt;div&gt;&lt;p&gt;A few weeks ago I changed my Android cellphone for a newer one. I needed to
+import my old phone's contacts into the new phone. Since I don't use cloud
+storage solutions because of privacy reasons, I had to import the contacts
+manually, using &lt;a href="https://en.wikipedia.org/wiki/VCard"&gt;vCard .vcf files&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Some years ago, when I still used Google services on my phone, the Gmail app
+decided to create a phone contact for each user I have emailed to. This created
+a lot of useless contacts. Contacts for whom I don't even know their phone
+number, only their e-mail. Unsurprisingly, this turned out to be quite annoying.
+I couldn't easily get rid of these new contacts, so I kept them even though I
+knew I wouldn't use them.&lt;/p&gt;
+&lt;p&gt;Since I was already changing my phone, it was a good occasion to finally delete
+all of these useless contacts. To do this, I would need to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Export my old phone contacts into a &lt;a href="https://en.wikipedia.org/wiki/VCard"&gt;.vcf file&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Find or create a tool allowing me to programmatically delete the contacts
+  without a phone number&lt;/li&gt;
+&lt;li&gt;Save the output into a new .vcf file, ready for import into my new phone&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In order to write the tool to filter contacts, I would need to parse a .vcf
+file. Normally, I would have used Python to address the problem. I could have
+relied on an &lt;a href="https://gitlab.com/victor-engmark/vcard"&gt;external library&lt;/a&gt; and trust it didn't have any bugs
+or vulnerabilities. Or maybe I could create my own .vcf/vCard parsing library,
+properly tested and documented. However, both options looked very complicated
+for the problem I intended to resolve. There had to be a simpler solution.&lt;/p&gt;
+&lt;p&gt;A .vcf file has the following format:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;BEGIN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;span class="n"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;2.1&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;First&lt;/span&gt; &lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;Last&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;;;;&lt;/span&gt;
+&lt;span class="n"&gt;FN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Visible&lt;/span&gt; &lt;span class="n"&gt;Name&lt;/span&gt;
+&lt;span class="n"&gt;TEL&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;CELL&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;123&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;456&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;789&lt;/span&gt;
+&lt;span class="n"&gt;END&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;span class="n"&gt;BEGIN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;span class="n"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;2.1&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Other&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;Contact&lt;/span&gt;&lt;span class="o"&gt;;;;&lt;/span&gt;
+&lt;span class="n"&gt;FN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Other&lt;/span&gt; &lt;span class="n"&gt;contact&lt;/span&gt;
+&lt;span class="n"&gt;EMAIL&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;PREF&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;gmail&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;
+&lt;span class="n"&gt;END&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the details of each contact are delimited by the lines
+&lt;code&gt;BEGIN:VCARD&lt;/code&gt; and &lt;code&gt;END:VCARD&lt;/code&gt;. The .vcf format doesn't look complicated. It is
+just plain text delimited by formatted lines.&lt;/p&gt;
+&lt;p&gt;Taking into account that .vcf files were simple, and that I only wanted to
+filter through my contact list once, I used &lt;a href="https://en.wikipedia.org/wiki/AWK"&gt;AWK&lt;/a&gt; instead of Python. The
+AWK language is relatively small, and you can learn it in a few hours. &lt;a href="https://en.wikipedia.org/wiki/AWK"&gt;Its
+Wikipedia page&lt;/a&gt; looks good enough as an introduction.&lt;/p&gt;
+&lt;p&gt;I took another look at the problem I wanted to solve, and built the following
+AWK program:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# lines will save the lines of the contact being processed into an array.&lt;/span&gt;
+&lt;span class="c1"&gt;# n represents the length of the lines array. It will increment on each&lt;/span&gt;
+&lt;span class="c1"&gt;# iteration.&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;lines&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;# This is like append in Python&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="sr"&gt;/^TEL;/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# The contact being processed has a phone number, so I want to keep it&lt;/span&gt;
+    &lt;span class="nx"&gt;has_phone_number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="sr"&gt;/^END:VCARD/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c1"&gt;# I reached the end of the contact&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# If the contact had a phone number, keep it (print all the saved lines)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;has_phone_number&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="kr"&gt;print&lt;/span&gt; &lt;span class="nx"&gt;lines&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# In the next iteration I'll use a different contact. Reset the program's&lt;/span&gt;
+    &lt;span class="c1"&gt;# state.&lt;/span&gt;
+    &lt;span class="nx"&gt;has_phone_number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="nx"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="c1"&gt;# This is like emptying the lines array&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I ran the program with &lt;code&gt;awk -f program.awk &amp;lt;unfiltered-contacts.vcf &amp;gt;filtered-contacts.vcf&lt;/code&gt;.
+This created a new .vcf file that only contained the contacts with a phone
+number. It was ready to be imported into my new cellphone.&lt;/p&gt;
+&lt;p&gt;With just 13 lines of code (discarding comments and blank lines), I made a
+program that solved my problem perfectly. I didn't overthink it by installing
+external libraries, creating big class hierarchies, nor making complex file
+parsers.&lt;/p&gt;
+&lt;p&gt;It looks like I was way more productive using a 40-year old language than using
+Python, my go-to language for most problems. Because AWK is intended to be used
+for handling text files and writing throwaway programs, it was the perfect fit
+for my problem. Maybe the code wasn't very maintainable, but I don't have
+to care about it if I planned to discard the program after it ran
+successfully. I needed a quick solution, and AWK succeeded at it.&lt;/p&gt;
+&lt;p&gt;I hope that with this short blogpost I explained the essence of the AWK
+language. It is a fundamental tool for programmers and sysadmins. You can learn
+the language in a few hours, and it will definitely be a productivity boost.&lt;/p&gt;
+&lt;p&gt;Here are a few useful resources I used when learning AWK:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://blog.jpalardy.com/posts/why-learn-awk/"&gt;Why Learn AWK&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;AWK quickstart
+  &lt;a href="https://jemma.dev/blog/awk-part-1"&gt;part 1&lt;/a&gt; and
+  &lt;a href="https://jemma.dev/blog/awk-part-2"&gt;part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=IfhMUed9RSE"&gt;"An AWK love story"&lt;/a&gt;, for those
+  who enjoy conference talks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There also exists &lt;a href="https://www.goodreads.com/book/show/703101.The_AWK_Programming_Language"&gt;a book&lt;/a&gt; about the language written by their authors. I
+can't recommend it since I haven't read it yet. But in case the resources above
+make you want to learn more, this book will probably be a great choice.&lt;/p&gt;
+&lt;p&gt;Greetings!&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>awk</category><category>unix</category><guid>https://licenciaparahackear.github.io/en/posts/filtrando-mis-contactos-del-celular-con-awk/</guid><pubDate>Sat, 26 Jun 2021 22:38:49 GMT</pubDate></item></channel></rss>

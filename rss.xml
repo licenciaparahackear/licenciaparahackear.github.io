@@ -1,7 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear</title><link>https://licenciaparahackear.github.io/</link><description>Seguridad informática, computación y software libre</description><atom:link href="https://licenciaparahackear.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>es</language><copyright>Contents © 2020 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licencia para Hackear</title><link>https://licenciaparahackear.github.io/</link><description>Seguridad informática, computación y software libre</description><atom:link href="https://licenciaparahackear.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>es</language><copyright>Contents © 2021 &lt;a href="mailto:pub@matiaslang.me"&gt;Matías Lang&lt;/a&gt; 
 &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;Esta obra está bajo una &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional&lt;/a&gt;.
-</copyright><lastBuildDate>Tue, 29 Sep 2020 00:18:30 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Ekoparty CTF: Stegano Writeup</title><link>https://licenciaparahackear.github.io/posts/ekoparty-ctf-stegano-writeup/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;Hace unos días fue la Ekoparty Online 2020. Esta vez la conferencia fue online,
+</copyright><lastBuildDate>Mon, 28 Jun 2021 20:13:43 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Filtrando mis contactos del celular con AWK</title><link>https://licenciaparahackear.github.io/posts/filtrando-mis-contactos-del-celular-con-awk/</link><dc:creator>Matías Lang</dc:creator><description>&lt;figure&gt;&lt;img src="https://licenciaparahackear.github.io/images/og-awk.png"&gt;&lt;/figure&gt; &lt;div&gt;&lt;p&gt;Hace unas semanas cambié mi celular con Android. Una de las cosas que tuve que
+hacer fue importar los contactos del celu viejo al nuevo. Como no uso soluciones
+de almacenamiento en la nube por cuestiones de privacidad, la importación la
+hice de forma manual, usando ficheros &lt;a href="https://es.wikipedia.org/wiki/VCard"&gt;vCard (con extensión .vcf)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En su momento, cuando todavía usaba Android con los servicios de Google, a la
+aplicación de Gmail se le ocurrió crear un contacto para cada usuario con quien
+haya intercambiado algún correo electrónico. Esto me creó un montón de contactos
+que no aportan nada en mi celular. Contactos a quienes les escribí por única
+vez, sin intención de hacerlo nuevamente. De quienes solamente conozco su
+dirección de correo electrónico y no su celular. &lt;/p&gt;
+&lt;p&gt;Como estaba cambiando el celu, me pareció que sería una buena ocasión para
+borrar todos estos contactos innecesarios. Para esto necesitaría:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Exportar todos mis contactos del celular viejo a un &lt;a href="https://es.wikipedia.org/wiki/VCard"&gt;fichero .vcf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Encontrar o armar una herramienta que borre todos aquellos contactos que no
+  tengan número de teléfono&lt;/li&gt;
+&lt;li&gt;Grabar la salida en un nuevo fichero .vcf, listo para ser importado en el
+  celular nuevo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para escribir una herramienta que filtre contactos tendría que ser capaz de
+parsear un fichero .vcf. Normalmente hubiese usado Python para resolver el
+problema. Podría haber utilizado una &lt;a href="https://gitlab.com/victor-engmark/vcard"&gt;librería externa&lt;/a&gt; y confiar
+en que no tenga bugs ni vulnerabilidades. O podría haber creado mi propia
+librería para manejo de .vcf/vCard, propiamente testeada y documentada. Sin
+embargo, ambas opciones parecían demasiado complicadas para un programa que
+pretendo correr una única vez. Tiene que haber una solución más simple.&lt;/p&gt;
+&lt;p&gt;Un fichero vcf tiene el siguiente formato:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;BEGIN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;span class="n"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;2.1&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Nombre&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;Apellido&lt;/span&gt;&lt;span class="o"&gt;;;;&lt;/span&gt;
+&lt;span class="n"&gt;FN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Nombre&lt;/span&gt; &lt;span class="n"&gt;Visible&lt;/span&gt;
+&lt;span class="n"&gt;TEL&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;CELL&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;123&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;456&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;789&lt;/span&gt;
+&lt;span class="n"&gt;END&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;span class="n"&gt;BEGIN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;span class="n"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;2.1&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Otro&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;Contacto&lt;/span&gt;&lt;span class="o"&gt;;;;&lt;/span&gt;
+&lt;span class="n"&gt;FN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Otro&lt;/span&gt; &lt;span class="n"&gt;contacto&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;Gmail&lt;/span&gt;
+&lt;span class="n"&gt;EMAIL&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;PREF&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;usuario&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;gmail&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;
+&lt;span class="n"&gt;END&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;VCARD&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Como se ve, los detalles de cada contacto se encuentran entre las líneas
+&lt;code&gt;BEGIN:VCARD&lt;/code&gt; y &lt;code&gt;END:VCARD&lt;/code&gt;. El formato en sí no parece nada complicado, ya que
+es texto plano delimitado por líneas.&lt;/p&gt;
+&lt;p&gt;Teniendo en cuenta de que quería parsear un fichero en un formato simple y
+hacerlo una única vez, me decidí por usar &lt;a href="https://es.wikipedia.org/wiki/AWK"&gt;AWK&lt;/a&gt; en vez del tradicional
+Python. El lenguaje AWK es bastante chico y por esto se puede aprender en pocas
+horas. Con leer &lt;a href="https://es.wikipedia.org/wiki/AWK"&gt;su página en Wikipedia&lt;/a&gt; ya se puede entender bastante su
+funcionamiento.&lt;/p&gt;
+&lt;p&gt;Después de repasar un poco, me armé un programa de awk corto pero efectivo:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# lineas va a guardar las líneas del contacto a procesar en un array.&lt;/span&gt;
+&lt;span class="c1"&gt;# n es la longitud del array, que se incrementa en cada iteración.&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;lineas&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;# Esto sería similar a un append en Python&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="sr"&gt;/^TEL;/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# el contacto siendo procesado tiene un teléfono, así que quiero que se muestre&lt;/span&gt;
+    &lt;span class="nx"&gt;tiene_telefono&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="sr"&gt;/^END:VCARD/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c1"&gt;# llegué al final del contacto, tengo que decidir si mostrarlo o no&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# si tenía un teléfono, mostrar todas las líneas que tengo guardadas&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;tiene_telefono&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="kr"&gt;print&lt;/span&gt; &lt;span class="nx"&gt;lineas&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# en la próxima iteración voy a arrancar con nuevo contacto, así que&lt;/span&gt;
+    &lt;span class="c1"&gt;# reinicio el estado del programa.&lt;/span&gt;
+    &lt;span class="nx"&gt;tiene_telefono&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="nx"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="c1"&gt;# Esto simula varias el array&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Después ejecuté el programa corriendo &lt;code&gt;awk -f miprograma.awk
+&amp;lt;contactos-sin-filtrar.vcf &amp;gt;contactos-filtrados.vcf&lt;/code&gt;. Eso me generó un nuevo
+.vcf con los contactos ya filtrados, listo para importar en mi celular.&lt;/p&gt;
+&lt;p&gt;Con solamente 13 líneas de código (sin contar comentarios ni líneas vacías),
+logré armar un programa que solucionó mi problema a la perfección. No me
+compliqué instalando librerías externas, creando jerarquías de clases
+inentendibles, ni haciendo parsers complejos de algún formato.&lt;/p&gt;
+&lt;p&gt;Así parece que con un lenguaje con más de 40 años de antigüedad me sentí más
+cómodo que con Python, mi lenguaje de preferencia. Esto se debe a que AWK es un
+lenuaje especializado en manejo de ficheros de texto y programas de un solo uso.
+Quizás el código no sea tan mantenible, pero no me importa si se que no lo voy a
+volver a correr. Necesitaba una solución rapida, y AWK cumplió a la perfección.&lt;/p&gt;
+&lt;p&gt;Espero con este post haber explicado la esencia del lenguaje AWK. Me parece que
+es una herramienta fundamental para cualquier persona que se dedique a programar
+o administrar sistemas UNIX-style. El lenguaje se puede aprender en pocas horas,
+y es capaz de mejorar muchísimo nuestra productividad.&lt;/p&gt;
+&lt;p&gt;Algunos recursos que me sirvieron para aprender AWK (están en inglés):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://blog.jpalardy.com/posts/why-learn-awk/"&gt;Why Learn AWK&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Guía rapida de AWK,
+  &lt;a href="https://jemma.dev/blog/awk-part-1"&gt;parte 1&lt;/a&gt; y
+  &lt;a href="https://jemma.dev/blog/awk-part-2"&gt;parte 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=IfhMUed9RSE"&gt;"An AWK love story"&lt;/a&gt;, charla que
+  explica la escencia del lenguaje&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;También existe &lt;a href="https://www.goodreads.com/book/show/703101.The_AWK_Programming_Language"&gt;un libro&lt;/a&gt; sobre el lenguaje escrito por sus autores. No
+lo puedo recomendar porque todavía lo leí, pero en caso de que los recursos
+anteriores te dejen con ganas de más, este libro seguro es el siguiente paso.&lt;/p&gt;
+&lt;p&gt;Saludos!&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>awk</category><category>unix</category><guid>https://licenciaparahackear.github.io/posts/filtrando-mis-contactos-del-celular-con-awk/</guid><pubDate>Sat, 26 Jun 2021 22:38:49 GMT</pubDate></item><item><title>Ekoparty CTF: Stegano Writeup</title><link>https://licenciaparahackear.github.io/posts/ekoparty-ctf-stegano-writeup/</link><dc:creator>Matías Lang</dc:creator><description>&lt;div&gt;&lt;p&gt;Hace unos días fue la Ekoparty Online 2020. Esta vez la conferencia fue online,
 así que opté por participar activamente en el CTF en vez de asistir a las
 charlas. Muchos retos me resultaron bastante desafiantes, entre ellos
 &lt;strong&gt;Stegano&lt;/strong&gt;, uno de los últimos que pudimos resolver junto a &lt;a href="https://twitter.com/EzequielTBH/"&gt;EzequielTBH&lt;/a&gt;.&lt;/p&gt;
